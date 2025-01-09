@@ -38,8 +38,43 @@ dependencies {
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.register('viteBuild') {
+	group = 'frontend'
+	description = 'Build the Vite frontend'
+	doLast {
+		exec {
+			workingDir 'frontend'
+			commandLine 'npm', 'install'
+		}
+		exec {
+			workingDir 'frontend'
+			commandLine 'npm', 'run', 'build'
+		}
+	}
+}
+
+tasks.register('copyFrontendToStatic') {
+	dependsOn 'viteBuild'
+	group = 'frontend'
+	description = 'Copy built frontend files to Spring Boot static folder'
+	doLast {
+		copy {
+			from 'frontend/dist/'
+			into 'src/main/resources/static/'
+		}
+	}
+}
+
+bootRun {
+	dependsOn 'copyFrontendToStatic'
+	doFirst {
+		println("Starting Spring Boot with the latest frontend build...")
+	}
 }

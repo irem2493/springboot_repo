@@ -3,13 +3,31 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 100px !important;
+    padding: 1rem 200px;
     border-bottom: 1px solid #ddd;
     background: white;
 }
 
+.logo-nav-container {
+    display: flex;
+    align-items: center; /* ✅ 로고와 메뉴를 중앙 정렬 */
+    gap: 2rem;           /* ✅ 로고와 메뉴 간격 줄이기 */
+}
+
 .logo img {
-    height: 100px;
+    height: 100px; /* ✅ 로고 크기 유지 */
+}
+
+.nav {
+    display: flex;
+    gap: 1.5rem;  /* ✅ 메뉴 간 간격 유지 */
+    align-items: center;
+}
+
+.user-menu {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
 }
 
 .nav a {
