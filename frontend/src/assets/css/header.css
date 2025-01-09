@@ -1,0 +1,46 @@
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 100px !important;
+    border-bottom: 1px solid #ddd;
+    background: white;
+}
+
+.logo img {
+    height: 100px;
+}
+
+.nav a {
+    margin: 0 1rem;
+    font-size: 1.2rem;
+    text-decoration: none;
+    color: black;
+    transition: color 0.3s ease;
+}
+
+.nav a:hover {
+    color: #00C853;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+}
+
+.user-menu a {
+    margin: 0 0.5rem;
+    text-decoration: none;
+    color: black;
+}
+
+.dropdown-button {
+    border: 1px solid #ddd;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    background: white;
+    font-size: 1rem;
+}
