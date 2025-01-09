@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import '../assets/css/header.css';
-import logo from '../assets/images/logo.png';
+import logo from '../assets/images/logo2.png';
 
 const Header: React.FC = () => {
     const location = useLocation();
@@ -21,8 +21,9 @@ const Header: React.FC = () => {
     };
 
     return (
-        <div style={{ backgroundColor: '#f0f0f0', padding: '1rem' }}>
-            <header className="header">
+        <header className="header">
+            {/* ✅ 로고와 메뉴를 묶는 새로운 컨테이너 추가 */}
+            <div className="logo-nav-container">
                 <div className="logo">
                     <img src={logo} alt="Green Cafe Logo" />
                 </div>
@@ -52,12 +53,12 @@ const Header: React.FC = () => {
                         커뮤니티
                     </Link>
                 </nav>
-                <div className="user-menu">
-                    <Link to="/signup">회원가입</Link> | <Link to="/login">로그인</Link>
-                    <button className="dropdown-button">회원 서비스 ▾</button>
-                </div>
-            </header>
-        </div>
+            </div>
+            <div className="user-menu">
+                <Link to="/signup">회원가입</Link> | <Link to="/login">로그인</Link>
+                <button className="dropdown-button">회원 서비스 ▾</button>
+            </div>
+        </header>
     );
 };
 
