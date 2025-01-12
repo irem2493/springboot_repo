@@ -45,31 +45,36 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-tasks.register('viteBuild') {
+tasks.register('viteBuild', Exec) {
 	group = 'frontend'
-	description = 'Build the Vite frontend'
-	doLast {
-		exec {
-			workingDir 'frontend'
-			commandLine 'npm', 'install'
-		}
-		exec {
-			workingDir 'frontend'
-			commandLine 'npm', 'run', 'build'
-		}
-	}
+	description = 'Install dependencies and build the Vite frontend'
+
+	workingDir '../frontend'  // 백엔드와 같은 레벨의 프론트엔드 경로 지정
+	commandLine 'C:/Program Files/nodejs/npm.cmd', 'install'
 }
 
-tasks.register('copyFrontendToStatic') {
-	dependsOn 'viteBuild'
+tasks.register('viteBuildRun', Exec) {
 	group = 'frontend'
-	description = 'Copy built frontend files to Spring Boot static folder'
-	doLast {
-		copy {
-			from 'frontend/dist/'
-			into 'src/main/resources/static/'
-		}
-	}
+	description = 'Run the Vite build for the frontend'
+
+	workingDir '../frontend'
+	commandLine 'C:/Program Files/nodejs/npm.cmd', 'run', 'build'
+}
+
+tasks.named('processResources') {
+	dependsOn 'viteBuild', 'viteBuildRun'
+}
+
+tasks.register('copyFrontendToBackend', Copy) {
+	group = 'frontend'
+	description = 'Copy Vite build output to Spring Boot static folder'
+
+	from '../frontend/dist'  // Vite 빌드 결과 폴더
+	into 'src/main/resources/static'  // Spring Boot의 정적 리소스 폴더
+}
+
+tasks.named('processResources') {
+	dependsOn 'viteBuild', 'viteBuildRun', 'copyFrontendToBackend'
 }
 
 bootRun {
