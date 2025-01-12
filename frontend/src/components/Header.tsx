@@ -22,42 +22,49 @@ const Header: React.FC = () => {
 
     return (
         <header className="header">
-            {/* ✅ 로고와 메뉴를 묶는 새로운 컨테이너 추가 */}
-            <div className="logo-nav-container">
-                <div className="logo">
-                    <img src={logo} alt="Green Cafe Logo" />
+            <div className="flex-box">
+                <div className="logo-nav-container">
+                    <div className="logo">
+                        <img src={logo} alt="Green Cafe Logo"/>
+                    </div>
                 </div>
-                <nav className="nav">
-                    <Link
-                        to="/"
-                        style={getLinkStyle('/')}
-                        onMouseEnter={() => handleMouseEnter('/')}
-                        onMouseLeave={handleMouseLeave}
-                    >
-                        카페소개
-                    </Link>
-                    <Link
-                        to="/menu"
-                        style={getLinkStyle('/menu')}
-                        onMouseEnter={() => handleMouseEnter('/menu')}
-                        onMouseLeave={handleMouseLeave}
-                    >
-                        메뉴
-                    </Link>
-                    <Link
-                        to="/community"
-                        style={getLinkStyle('/community')}
-                        onMouseEnter={() => handleMouseEnter('/community')}
-                        onMouseLeave={handleMouseLeave}
-                    >
-                        커뮤니티
-                    </Link>
-                </nav>
+
+                <div className="search-bar">
+                    <input type="text" placeholder="검색어를 입력해주세요"/>
+                    <button type="submit">🔍</button>
+                </div>
+                <div className="user-menu">
+                    <Link to="/signup">회원가입</Link> | <Link to="/login">로그인</Link>
+                    <button className="dropdown-button">회원 서비스 ▾</button>
+                </div>
             </div>
-            <div className="user-menu">
-                <Link to="/signup">회원가입</Link> | <Link to="/login">로그인</Link>
-                <button className="dropdown-button">회원 서비스 ▾</button>
-            </div>
+
+            <nav className="nav">
+                <Link
+                    to="/"
+                    style={getLinkStyle('/')}
+                    onMouseEnter={() => handleMouseEnter('/')}
+                    onMouseLeave={handleMouseLeave}
+                >
+                    카페소개
+                </Link>
+                <Link
+                    to="/menu"
+                    style={getLinkStyle('/menu')}
+                    onMouseEnter={() => handleMouseEnter('/menu')}
+                    onMouseLeave={handleMouseLeave}
+                >
+                    메뉴
+                </Link>
+                <Link
+                    to="/community"
+                    style={getLinkStyle('/community')}
+                    onMouseEnter={() => handleMouseEnter('/community')}
+                    onMouseLeave={handleMouseLeave}
+                >
+                    커뮤니티
+                </Link>
+            </nav>
         </header>
     );
 };
