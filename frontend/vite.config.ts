@@ -4,11 +4,12 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  base: './', // ✅ 상대 경로 설정
+  base: '/', // ✅ 상대 경로 설정
   build: {
     outDir: '../backend/src/main/resources/static', // ✅ 백엔드 static 폴더에 직접 빌드 결과 저장
     emptyOutDir: true
   },
+
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'), // ✅ 별칭을 정확히 설정
