@@ -25,7 +25,7 @@ const Header: React.FC = () => {
             <div className="flex-box">
                 <div className="logo-nav-container">
                     <div className="logo">
-                        <img src={logo} alt="Green Cafe Logo"/>
+                        <a href="/"><img src={logo} alt="Green Cafe Logo"/></a>
                     </div>
                 </div>
 
@@ -34,7 +34,7 @@ const Header: React.FC = () => {
                     <button type="submit">🔍</button>
                 </div>
                 <div className="user-menu">
-                    <Link to="/signup">회원가입</Link> | <Link to="/login">로그인</Link>
+                    <Link to="/join">회원가입</Link> | <Link to="/login">로그인</Link>
                     <button className="dropdown-button">회원 서비스 ▾</button>
                 </div>
             </div>
