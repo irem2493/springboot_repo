@@ -8,7 +8,7 @@ public class MainController {
 
     @GetMapping(value = {"/", "/join"})
     public String index() {
-        return "forward:/index.html";  // React의 index.html 서빙
+        return "redirect:http://localhost:5000";  // React의 index.html 서빙
     }
 
 

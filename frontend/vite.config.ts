@@ -23,6 +23,7 @@ export default defineConfig({
       overlay: true,       // 브라우저에 오류 메시지 표시
     },
     port: 5000,
+    open: true,
     proxy: {
       '/api': {
         target: 'http://localhost:8080',
