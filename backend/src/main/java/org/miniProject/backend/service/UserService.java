@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,5 +46,15 @@ public class UserService {
         fileService.saveFile(requestUserDto.getFile(), requestUserDto.getFileGbnCd(), requestUserDto.getFileRefId(), requestUserDto.getUsername());
 
 
+    }
+
+    public boolean findUserByUsername(String username) {
+        boolean isExist = true;
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isPresent()){
+            System.out.println(user);
+            isExist = false;
+        }
+        return isExist;
     }
 }
