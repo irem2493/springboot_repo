@@ -23,6 +23,9 @@ export default defineConfig({
       overlay: true,       // 브라우저에 오류 메시지 표시
     },
     port: 5000,
+
+    strictPort: true,  // 만약 포트가 사용 중이면 실행 중지
+    host: 'localhost',  // 필요에 따라 수정,
     open: true,
     proxy: {
       '/api': {

@@ -12,6 +12,7 @@ interface FormData {
 }
 
 const JoinPage: React.FC = () => {
+
     const [formData, setFormData] = useState<FormData>({
         username: '',
         password: '',
@@ -21,13 +22,122 @@ const JoinPage: React.FC = () => {
         gender: 0,
     });
 
+    // 성별 버튼의 ref 생성
+    const genderButtonRef = useRef<HTMLDivElement>(null);
+
+    const [username, setUsername] = useState('');
+    const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
+    const [isChecked, setIsChecked] = useState(false);
+
+    const [error, setError] = useState<string | null>(null);
+
+    const[birth] = useState('');
+
+
+    const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUsername(e.target.value);
+        setIsAvailable(null); // 입력할 때마다 초기화
+    };
+
+    const checkDuplicate = async () => {
+        if (!username.trim()) {
+            alert('아이디를 입력하세요.');
+            return;
+        }
+
+        try {
+            const response = await axios.get(`http://localhost:8080/api/user/${username}`);
+            console.log(response.data.available);
+            if (response.data.available) {
+                setIsAvailable(true);
+                setIsChecked(true);
+            } else {
+                setIsAvailable(false);
+            }
+        } catch (error) {
+            console.error('아이디 중복 체크 오류:', error);
+            setIsAvailable(false);
+        }
+    };
+
+// 현재 포커스를 줄 필드의 이름을 저장하는 상태
+    const [focusField, setFocusField] = useState<string | null>(null);
+    // 각 입력 필드에 대한 ref 생성
+    const usernameRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
+    const confirmPasswordRef = useRef<HTMLInputElement>(null);
+    const nameRef = useRef<HTMLInputElement>(null);
+    const birthRef = useRef<HTMLInputElement>(null);
+
+    // focusField 값이 변경될 때 해당 입력 필드로 포커스 이동
+    useEffect(() => {
+        if (focusField === 'username' && usernameRef.current) {
+            usernameRef.current.focus();
+        } else if (focusField === 'password' && passwordRef.current) {
+            passwordRef.current.focus();
+        } else if (focusField === 'name' && nameRef.current) {
+            nameRef.current.focus();
+        } else if (focusField === 'birth' && birthRef.current) {
+            birthRef.current.focus();
+        }
+    }, [focusField]);
+
     // ✅ 모든 입력 필드의 값을 업데이트하는 핸들러
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+        console.log(name === 'birth'+'---------');
+        if (name === 'birth') {
+            if (value.length === 8) {
+                if (!validateBirthdate(value)) {
+                    return; // 유효성 검사 실패 시 상태 업데이트 방지
+                }
+            } else {
+                setError(null);
+            }
+        }
+
         setFormData((prevFormData) => ({
             ...prevFormData,
             [name]: value,
         }));
+    };
+
+    const validateBirthdate = (dateStr: string): boolean => {
+        setError(null);
+
+        if (!/^\d{8}$/.test(dateStr)) {
+            setError('생년월일은 8자리 숫자여야 합니다. (예: 20000101)');
+            console.log('Error: 8자리 숫자가 아닙니다.');
+            return false;
+        }
+
+        const year = parseInt(dateStr.substring(0, 4), 10);
+        const month = parseInt(dateStr.substring(4, 6), 10);
+        const day = parseInt(dateStr.substring(6, 8), 10);
+
+        const currentYear = new Date().getFullYear();
+
+        if (year < 1900 || year > currentYear) {
+            setError(`연도는 1900년부터 ${currentYear}년까지 가능합니다.`);
+            console.log('Error: 연도 범위 초과');
+            return false;
+        }
+
+        if (month < 1 || month > 12) {
+            setError('월은 01부터 12까지의 숫자여야 합니다.');
+            console.log('Error: 잘못된 월 입력');
+            return false;
+        }
+
+        const daysInMonth = new Date(year, month, 0).getDate();
+        if (day < 1 || day > daysInMonth) {
+            setError(`${year}년 ${month}월은 ${daysInMonth}일까지 있습니다.`);
+            console.log(`Error: ${year}년 ${month}월은 ${daysInMonth}일까지`);
+            return false;
+        }
+
+        console.log('생년월일이 유효합니다.');
+        return true;
     };
 
 
@@ -75,14 +185,63 @@ const JoinPage: React.FC = () => {
             formData.append('file', selectedFile);
         }
 
+        // 필수 필드 확인 (FormData의 get() 메서드 사용)
+        if (!formData.get('username') || !(formData.get('username') as string).trim()) {
+            alert('아이디를 입력하세요.');
+            setFocusField('username');
+            return;
+        }
+        if (!formData.get('password') || !(formData.get('password') as string).trim()) {
+            alert('비밀번호를 입력하세요.');
+            setFocusField('password');
+            return;
+        }
+        if (formData.get('password') !== formData.get('confirmPassword')) {
+            alert('비밀번호가 일치하지 않습니다.');
+            setFocusField('confirmPassword');
+            return;
+        }
+        if (!formData.get('name') || !(formData.get('name') as string).trim()) {
+            alert('이름을 입력하세요.');
+            setFocusField('name');
+            return;
+        }
+        if (!formData.get('birth') || (formData.get('birth') as string).length !== 8 || !validateBirthdate(formData.get('birth') as string)) {
+            alert('올바른 생년월일을 입력하세요.');
+            setFocusField('birth');
+            return;
+        }
+
+        if (formData.get('gender') === null) {
+            alert('성별을 선택하세요.');
+            genderButtonRef.current?.focus();
+            return;
+        }
+
+        if(!isChecked){
+            alert('아이디 중복 확인을 해주세요');
+            return ;
+        }
+
+        if(isAvailable === false){
+            alert('이미 사용중인 아이디입니다. 다른 아이디를 입력해주세요.');
+            return;
+        }
+
+
         try {
+
+
+
+
             const response = await axios.post('http://localhost:8080/api/user', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data', // ✅ FormData 전송
                 },
             });
-            alert('회원가입 성공!');
             console.log('서버 응답:', response.data);
+            alert('회원가입 성공!');
+            location.href='/';
         } catch (error) {
             console.error('회원가입 실패:', error);
             alert('회원가입에 실패했습니다.');
@@ -121,22 +280,40 @@ const JoinPage: React.FC = () => {
             </label>
             <div className="input-with-button">
                 <input
+                    ref={usernameRef}
                     type="text"
                     name="username"
                     placeholder="아이디를 입력하세요"
-                    onChange={handleChange}
+                    autoFocus={focusField === 'username'} // 상태 기반 포커스
+                    onChange={(e) => {
+                        handleChange(e);
+                        handleUsernameChange(e);
+                    }}
                 />
-                <button className="duplicate-check-btn">중복 확인</button>
-            </div>
+                <button className="duplicate-check-btn"
+                        disabled={isAvailable === true}
+                        onClick={(e)=>{
+                                e.preventDefault();
+                                    checkDuplicate();
 
+                        }
+                }>중복 확인</button>
+
+            </div>
+            <div className="flex-box">
+                {isAvailable === true && <p style={{color: 'green'}}>사용 가능한 아이디입니다.</p>}
+                {isAvailable === false && <p style={{color: 'red'}}>이미 사용 중인 아이디입니다.</p>}
+            </div>
             {/* 비밀번호 입력 */}
             <label>
                 <span className="required">*</span> 비밀번호
             </label>
             <input
+                ref={passwordRef}
                 type="password"
                 name="password"
                 placeholder="비밀번호를 입력하세요"
+                autoFocus={focusField === 'password'}
                 onChange={handleChange}
             />
 
@@ -145,9 +322,11 @@ const JoinPage: React.FC = () => {
                 <span className="required">*</span> 비밀번호 확인
             </label>
             <input
+                ref={confirmPasswordRef}
                 type="password"
                 name="confirmPassword"
                 placeholder="비밀번호를 재입력하세요"
+                autoFocus={focusField === 'confirmPassword'}
                 onChange={handleChange}
             />
 
@@ -156,10 +335,12 @@ const JoinPage: React.FC = () => {
                 <span className="required">*</span> 이름
             </label>
             <input
+                ref={nameRef}
                 type="text"
                 name="name"
                 placeholder="이름을 입력해주세요"
                 onChange={handleChange}
+                autoFocus={focusField === 'name'}
             />
 
             {/* 생년월일과 성별을 나란히 배치하되, 라벨을 위로 */}
@@ -170,11 +351,14 @@ const JoinPage: React.FC = () => {
                         <span className="required">*</span> 생년월일
                     </label>
                     <input
+                        ref={birthRef}
                         type="text"
                         name="birth"
                         placeholder="생년월일(예시: 20000101)"
                         value={formData.birth}
                         onChange={handleChange}
+                        autoFocus={focusField === 'birth'}
+                        maxLength={8}
                     />
                 </div>
 
@@ -183,7 +367,7 @@ const JoinPage: React.FC = () => {
                     <label>
                         <span className="required">*</span> 성별
                     </label>
-                    <div className="gender-select">
+                    <div className="gender-select" ref={genderButtonRef} tabIndex={-1}>
                         {/* ✅ hidden input 추가 */}
                         <input type="hidden" name="gender" value={formData.gender.toString()}/>
                         <button
@@ -209,6 +393,11 @@ const JoinPage: React.FC = () => {
                         </button>
                     </div>
                 </div>
+            </div>
+            <div className="flex-box">
+                {error && <p style={{ color: 'red' }}>{error}</p>}
+                {!error && birth.length === 8 && <p style={{ color: 'green' }}>올바른 형식입니다.</p>}
+
             </div>
 
             {/* 회원가입 버튼 */}
