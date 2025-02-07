@@ -1,12 +1,15 @@
 package org.miniProject.backend.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.miniProject.backend.dto.Request.RequestLoginDto;
 import org.miniProject.backend.dto.Request.RequestUserDto;
 import org.miniProject.backend.entity.User;
-import org.miniProject.backend.service.FileService;
 import org.miniProject.backend.service.UserService;
+import org.miniProject.backend.utils.JWTUtil;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -21,7 +24,6 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
-    private final FileService fileService;
 
     @PostMapping("/user")
     public ResponseEntity<?> addUser(@ModelAttribute RequestUserDto requestUserDto) throws IOException {
@@ -39,4 +41,6 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
+
+
 }

@@ -9,7 +9,7 @@ public class RequestUserDto {
     private String password;
     private String name;
     private String birth;
-    private Integer gender;
+    private String gender;
     private String role;
     private MultipartFile file;
     private String fileGbnCd;
