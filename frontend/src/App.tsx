@@ -4,6 +4,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Header from '../src/components/Header'; // ✅ 경로 별칭 사용
 import HomePage from '../src/components/HomePage';
 import JoinPage from '../src/components/Join';
+import LoinPage from "../src/components/Login";
+import UserinfoPage from "../src/components/Userinfo";
 
 const App: React.FC = () => {
     return (
@@ -15,7 +17,8 @@ const App: React.FC = () => {
                 <Route path="/menu" element={<h1>메뉴 페이지</h1>} />
                 <Route path="/community" element={<h1>커뮤니티 페이지</h1>} />
                 <Route path="/join" element={<JoinPage />} />{/* ✅ /join 경로 추가 */}
-                <Route path="/login" element={<h1>로그인 페이지</h1>} />
+                <Route path="/login" element={<LoinPage/>} />
+                <Route path="/userinfo" element={<UserinfoPage/>} />
                 {/* ✅ 없는 경로에 대한 처리를 추가 */}
                 <Route path="*" element={<h1>404 페이지를 찾을 수 없습니다.</h1>} />
             </Routes>

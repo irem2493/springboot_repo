@@ -27,14 +27,7 @@ public class UserService {
         String encryptedPassword = passwordEncoder.encode(requestUserDto.getPassword());
         requestUserDto.setPassword(encryptedPassword);
 
-        User user = User.builder()
-                .username(requestUserDto.getUsername())
-                .password(requestUserDto.getPassword())
-                .name(requestUserDto.getName())
-                .birth(requestUserDto.getBirth())
-                .gender(requestUserDto.getGender())
-                .role("ROLE_USER")
-                .joindate(LocalDateTime.now())
+       2             .joindate(LocalDateTime.now())
                 .deletedYN('N')
                 .build();
         userRepository.save(user);
@@ -56,5 +49,19 @@ public class UserService {
             isExist = false;
         }
         return isExist;
+    }
+
+    public User findByUsername(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isPresent()){
+            return user.get();
+        }
+        return null;
+    }
+
+    public User findByUsernameAndPassword(String username, String password) {
+        String encryptedPassword = passwordEncoder.encode(password);
+        User user = userRepository.findByUsernameAndPassword(username, encryptedPassword);
+        return user;
     }
 }

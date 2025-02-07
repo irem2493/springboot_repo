@@ -8,7 +8,7 @@ interface FormData {
     confirmPassword: string;
     name: string;
     birth: string;
-    gender: 0 | 1;
+    gender: 'M' | 'F';
 }
 
 const JoinPage: React.FC = () => {
@@ -19,7 +19,7 @@ const JoinPage: React.FC = () => {
         confirmPassword: '',
         name: '',
         birth: '',
-        gender: 0,
+        gender: 'M',
     });
 
     // 성별 버튼의 ref 생성
@@ -230,10 +230,6 @@ const JoinPage: React.FC = () => {
 
 
         try {
-
-
-
-
             const response = await axios.post('http://localhost:8080/api/user', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data', // ✅ FormData 전송
@@ -372,10 +368,10 @@ const JoinPage: React.FC = () => {
                         <input type="hidden" name="gender" value={formData.gender.toString()}/>
                         <button
                             type="button"
-                            className={formData.gender === 0 ? 'active' : 'inactive'}
+                            className={formData.gender === 'M' ? 'active' : 'inactive'}
                             onClick={(e) => {
                                 e.preventDefault();
-                                setFormData((prevData) => ({...prevData, gender: 0}));
+                                setFormData((prevData) => ({...prevData, gender: 'M'}));
                             }}
                         >
                             남자
@@ -383,10 +379,10 @@ const JoinPage: React.FC = () => {
 
                         <button
                             type="button"
-                            className={formData.gender === 1 ? 'active' : 'inactive'}
+                            className={formData.gender === 'F' ? 'active' : 'inactive'}
                             onClick={(e) => {
                                 e.preventDefault();
-                                setFormData((prevData) => ({...prevData, gender: 1}));
+                                setFormData((prevData) => ({...prevData, gender: 'F'}));
                             }}
                         >
                             여자
